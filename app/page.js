@@ -338,13 +338,14 @@ const Gallery = () => {
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className="w-full h-[600px] flex items-center justify-center bg-black rounded-2xl overflow-hidden">
-                  <img
-                    src={image.src}
-                    alt={image.alt}
-                    className="h-full object-contain"
-                  />
-                </div>
+                <div className="w-full h-[400px] sm:h-[500px] md:h-[600px] flex items-center justify-center bg-black rounded-2xl overflow-hidden">
+  <img
+    src={image.src}
+    alt={image.alt}
+    className="h-full w-auto object-contain"
+  />
+</div>
+
               </motion.div>
             </AnimateOnScroll>
           ))}
@@ -461,7 +462,7 @@ const Footer = () => {
               <span>prabodyatharushi90@gmail.com</span>
             </motion.a>
             <motion.a
-              href="#"
+              href="https://www.facebook.com/profile.php?id=61574123115109&mibextid=ZbWKwL"
               className="flex items-center space-x-2 text-white hover:text-gold-light transition"
               whileHover={{ scale: 1.05 }}
             >
