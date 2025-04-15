@@ -1,19 +1,19 @@
 "use client";
-import { useEffect, useRef , useState} from "react";
-import Head from "next/head";
 import { motion, useAnimation, useInView } from "framer-motion";
 import {
-  Scissors,
-  Sparkles,
-  Spa,
+  Calendar,
+  ChevronDown,
+  Clock,
+  Facebook,
+  Mail,
   MapPin,
   Phone,
-  Mail,
-  Facebook,
-  Calendar,
-  Clock,
-  ChevronDown,
+  Scissors,
+  Sparkles
 } from "lucide-react";
+import Head from "next/head";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
 // Animation component that triggers on scroll
 const AnimateOnScroll = ({ children, className, variants }) => {
@@ -142,7 +142,7 @@ const Hero = () => {
 
           <div className="flex items-center justify-center gap-2 text-sm md:text-base text-gold/80">
             <Clock size={18} className="text-gold" />
-            <span>17th April 2025, 9:30 AM (Sri Lanka Time)</span>
+            <span>17th April 2025, 9:30 AM </span>
           </div>
         </motion.div>
       </motion.div>
@@ -182,10 +182,11 @@ const About = () => {
             }}
           >
             <p className="text-lg mb-6">
-              Aurora Elegance is more than a salon — it's a sanctuary for
+              Aurora Elegance is more than a salon — it&rsquo;s a sanctuary for
               beauty, bridal dreams, and style transformation. We blend artistry
               with luxury to create an experience as unique as you are.
             </p>
+
             <p className="mb-6">
               Founded by Tharushi Prabodhya, our salon combines modern
               techniques with personalized attention to ensure you leave feeling
@@ -216,10 +217,12 @@ const About = () => {
             }}
           >
             <div className="rounded-2xl overflow-hidden shadow-2xl h-80">
-              <img
+              <Image
                 src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?q=80&w=800"
                 alt="Salon Interior"
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                priority // Optional: for faster loading
               />
             </div>
           </AnimateOnScroll>
@@ -347,10 +350,14 @@ const Gallery = () => {
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
               >
-                <img
+                <Image
                   src={image.src}
                   alt={image.alt}
+                  width={800} // optional, recommended for better performance
+                  height={256} // h-64 = 16rem = 256px
                   className="w-full h-64 object-cover"
+                  style={{ objectFit: "cover" }}
+                  priority // optional
                 />
               </motion.div>
             </AnimateOnScroll>
