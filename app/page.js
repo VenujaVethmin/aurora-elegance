@@ -14,6 +14,7 @@ import {
   Clock,
   ChevronDown,
 } from "lucide-react";
+import Navbar from "@/components/Navbar";
 
 // Animation component that triggers on scroll
 const AnimateOnScroll = ({ children, className, variants }) => {
@@ -205,11 +206,11 @@ const About = () => {
               },
             }}
           >
-            <div className="rounded-2xl overflow-hidden shadow-2xl h-80">
+            <div className="rounded-2xl overflow-hidden shadow-2xl h-120 max-md:h-220">
               <img
-                src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?q=80&w=800"
+                src="./main.jpg"
                 alt="Salon Interior"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-[center_20%]  object-cover"
               />
             </div>
           </AnimateOnScroll>
@@ -293,20 +294,12 @@ const Services = () => {
 const Gallery = () => {
   const images = [
     {
-      src: "https://images.unsplash.com/photo-1562322140-8baeececf3df?q=80&w=800",
+      src: "./d.jpg",
       alt: "Bridal Styling",
     },
     {
-      src: "http://images.unsplash.com/photo-1516975080664-ed2fc6a32937?q=80&w=800",
+      src: "./s.jpg",
       alt: "Hair Treatment",
-    },
-    {
-      src: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=800",
-      alt: "Makeup Session",
-    },
-    {
-      src: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=800",
-      alt: "Salon Interior",
     },
   ];
 
@@ -316,7 +309,7 @@ const Gallery = () => {
         <h2 className="text-3xl md:text-4xl font-bold gold-text mb-12 text-center">
           Gallery Sneak Peek
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {images.map((image, index) => (
             <AnimateOnScroll
               key={index}
@@ -337,7 +330,7 @@ const Gallery = () => {
                 <img
                   src={image.src}
                   alt={image.alt}
-                  className="w-full h-64 object-cover"
+                  className="w-full h-[500px] max-md:h-[600px] object-cover"
                 />
               </motion.div>
             </AnimateOnScroll>
@@ -412,14 +405,14 @@ const Location = () => {
           >
             <div className="rounded-2xl overflow-hidden shadow-2xl h-80">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3967.0756308330147!2d80.2245!3d6.123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMDcnMjMuMCJOIDgwwrAxMyczNC4yIkU!5e0!3m2!1sen!2slk!4v1650000000000!5m2!1sen!2slk"
+                src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3958.661792603523!2d79.98031507499879!3d7.165039992839606!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zN8KwMDknNTQuMSJOIDc5wrA1OCc1OC40IkU!5e0!3m2!1sen!2slk!4v1744750559905!5m2!1sen!2slk"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen=""
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-              />
+              ></iframe>
             </div>
           </AnimateOnScroll>
         </div>
@@ -485,6 +478,7 @@ export default function Home() {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Navbar/>
       <main className="overflow-x-hidden">
         <Hero />
         <About />
