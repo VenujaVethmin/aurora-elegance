@@ -39,7 +39,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/">
-            <div className="flex items-center space-x-2">
+            <div className="flex  items-center space-x-2">
               <Image
                 src="/logo.png" // Make sure to add your logo image
                 alt="Aurora Elegance Logo"
@@ -57,7 +57,7 @@ const Navbar = () => {
               <motion.a
                 key={link.href}
                 href={link.href}
-                className="text-white hover:text-gold transition-colors"
+                className="text-white  hover:text-gold transition-colors" 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >

@@ -92,7 +92,7 @@ const Hero = () => {
   );
 
   return (
-    <section className="relative h-screen flex flex-col justify-center items-center overflow-hidden">
+    <section className="relative bg-black h-screen flex flex-col justify-center items-center overflow-hidden">
       <div className="gold-wave" />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -101,7 +101,7 @@ const Hero = () => {
         className="text-center z-10 px-4"
       >
         <motion.div
-          className="mb-4"
+          className=""
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.8 }}
@@ -110,14 +110,14 @@ const Hero = () => {
             src="/logo.png" // Ensure it's in public/
             alt="Aurora Elegance Logo"
             width={500} // Adjust size as needed
-            height={500}
+            height={100}
             className="mx-auto"
             priority
           />
         </motion.div>
 
         <motion.p
-          className="text-lg md:text-xl tracking-widest uppercase mb-8"
+          className="text-lg md:text-xl tracking-widest uppercase "
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.8 }}
@@ -305,7 +305,7 @@ const Services = () => {
 const Gallery = () => {
   const images = [
     {
-      src: "./d.jpg",
+      src: "./z.jpg",
       alt: "Bridal Styling",
     },
     {
@@ -338,11 +338,13 @@ const Gallery = () => {
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
               >
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="w-full h-[500px] max-md:h-[600px] object-cover"
-                />
+                <div className="w-full h-[600px] flex items-center justify-center bg-black rounded-2xl overflow-hidden">
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    className="h-full object-contain"
+                  />
+                </div>
               </motion.div>
             </AnimateOnScroll>
           ))}
