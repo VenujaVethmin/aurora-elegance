@@ -1,19 +1,19 @@
 "use client";
+import { useEffect, useRef , useState} from "react";
+import Head from "next/head";
 import { motion, useAnimation, useInView } from "framer-motion";
 import {
-  Calendar,
-  ChevronDown,
-  Clock,
-  Facebook,
-  Mail,
+  Scissors,
+  Sparkles,
+  Spa,
   MapPin,
   Phone,
-  Scissors,
-  Sparkles
+  Mail,
+  Facebook,
+  Calendar,
+  Clock,
+  ChevronDown,
 } from "lucide-react";
-import Head from "next/head";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
 
 // Animation component that triggers on scroll
 const AnimateOnScroll = ({ children, className, variants }) => {
@@ -217,12 +217,10 @@ const About = () => {
             }}
           >
             <div className="rounded-2xl overflow-hidden shadow-2xl h-80">
-              <Image
+              <img
                 src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?q=80&w=800"
                 alt="Salon Interior"
-                fill
-                className="object-cover"
-                priority // Optional: for faster loading
+                className="w-full h-full object-cover"
               />
             </div>
           </AnimateOnScroll>
@@ -350,14 +348,10 @@ const Gallery = () => {
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
               >
-                <Image
+                <img
                   src={image.src}
                   alt={image.alt}
-                  width={800} // optional, recommended for better performance
-                  height={256} // h-64 = 16rem = 256px
                   className="w-full h-64 object-cover"
-                  style={{ objectFit: "cover" }}
-                  priority // optional
                 />
               </motion.div>
             </AnimateOnScroll>
