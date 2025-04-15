@@ -15,6 +15,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import Image from "next/image";
 
 // Animation component that triggers on scroll
 const AnimateOnScroll = ({ children, className, variants }) => {
@@ -99,22 +100,31 @@ const Hero = () => {
         transition={{ duration: 1 }}
         className="text-center z-10 px-4"
       >
-        <motion.h1
-          className="text-5xl md:text-7xl font-bold gold-text mb-4"
+        <motion.div
+          className="mb-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.8 }}
         >
-          Aurora Elegance
-        </motion.h1>
+          <Image  
+            src="/logo.png" // Ensure it's in public/
+            alt="Aurora Elegance Logo"
+            width={500} // Adjust size as needed
+            height={500}
+            className="mx-auto"
+            priority
+          />
+        </motion.div>
+
         <motion.p
           className="text-lg md:text-xl tracking-widest uppercase mb-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.8 }}
         >
-          Hair | Beauty | Bridal
+          
         </motion.p>
+
         <motion.div
           className="bg-black/50 backdrop-blur-sm p-6 rounded-xl mb-8"
           initial={{ opacity: 0, scale: 0.9 }}
@@ -137,6 +147,7 @@ const Hero = () => {
           </div>
         </motion.div>
       </motion.div>
+
       <motion.div
         className="absolute bottom-8 left-0 right-0 mx-auto text-center"
         initial={{ opacity: 0 }}
@@ -206,7 +217,7 @@ const About = () => {
               },
             }}
           >
-            <div className="rounded-2xl overflow-hidden shadow-2xl h-120 max-md:h-220">
+            <div className="rounded-2xl overflow-hidden shadow-2xl h-120 max-md:h-150">
               <img
                 src="./main.jpg"
                 alt="Salon Interior"
