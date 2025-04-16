@@ -11,11 +11,12 @@ import { toast } from "sonner";
 const fetcher = (url) => axiosInstance.get(url).then((res) => res.data);
 
 export default function AdminPanel() {
-
-  const { data : images , error, isLoading, mutate } = useSWR(
-    "/cloudinary/gallery",
-    fetcher
-  );
+  const {
+    data: images,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR("/cloudinary/gallery", fetcher);
   const [activeTab, setActiveTab] = useState("gallery");
   const [isUploading, setIsUploading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -79,16 +80,14 @@ export default function AdminPanel() {
       const response = await axiosInstance.post("/cloudinary/upload", formData);
 
       if (response.status === 200) {
-        
         toast.success("Image uploaded successfully!");
-        mutate(); 
+        mutate();
         if (previewUrl) {
           URL.revokeObjectURL(previewUrl);
           setPreviewUrl(null);
         }
         setUploadData({ category: "", title: "", file: null });
         setActiveTab("gallery");
-        
       }
     } catch (error) {
       console.error("Upload error:", error);
@@ -103,28 +102,28 @@ export default function AdminPanel() {
   };
 
   const handleDelete = async (id) => {
-     toast("Delete this image?", {
-       description: "This action cannot be undone.",
-       action: {
-         label: "Delete",
-         onClick: async () => {
-           try {
-             const res = await axiosInstance.delete(
-               `/cloudinary/deleteGallery/${id}`
-             );
-             if (res.status === 200) {
-               toast.success("Image deleted successfully!");
-               mutate(); // Re-fetch gallery data
-             } else {
-               toast.error("Failed to delete image.");
-             }
-           } catch (err) {
-             toast.error("Something went wrong.");
-             console.error(err);
-           }
-         },
-       },
-     });
+    toast("Delete this image?", {
+      description: "This action cannot be undone.",
+      action: {
+        label: "Delete",
+        onClick: async () => {
+          try {
+            const res = await axiosInstance.delete(
+              `/cloudinary/deleteGallery/${id}`
+            );
+            if (res.status === 200) {
+              toast.success("Image deleted successfully!");
+              mutate();
+            } else {
+              toast.error("Failed to delete image.");
+            }
+          } catch (err) {
+            toast.error("Something went wrong.");
+            console.error(err);
+          }
+        },
+      },
+    });
   };
 
   return (
@@ -265,6 +264,7 @@ export default function AdminPanel() {
                 key={image.id}
                 layout
                 className="group relative aspect-square rounded-xl overflow-hidden"
+                onClick={() => setSelectedImage(image)}
               >
                 <Image
                   src={image.link || "image.link"}
@@ -274,20 +274,35 @@ export default function AdminPanel() {
                 />
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-4">
                   <button
-                    onClick={() => handleDelete(image.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(image.id);
+                    }}
                     className="p-2 bg-red-500 rounded-full hover:bg-red-600 transition-colors"
                   >
                     <X size={20} className="text-white" />
                   </button>
                   <button
-                    onClick={() => setSelectedImage(image)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedImage(image);
+                    }}
                     className="p-2 bg-gold rounded-full hover:bg-gold/80 transition-colors"
                   >
                     <ImageIcon size={20} className="text-black" />
                   </button>
                 </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(image.id);
+                  }}
+                  className="absolute top-2 right-2 p-1 bg-red-500 rounded-full md:hidden z-10"
+                >
+                  <X size={16} className="text-white" />
+                </button>
                 <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                  <p className="text-white font-medium">{image.alt}</p>
+                  <p className="text-white font-medium">{image.title}</p>
                   <p className="text-gold/80 text-sm capitalize">
                     {image.category}
                   </p>
@@ -321,8 +336,8 @@ export default function AdminPanel() {
                 onClick={(e) => e.stopPropagation()}
               >
                 <Image
-                  src={selectedImage.src}
-                  alt={selectedImage.alt}
+                  src={selectedImage.link}
+                  alt={selectedImage.title}
                   fill
                   className="object-contain"
                   quality={95}
