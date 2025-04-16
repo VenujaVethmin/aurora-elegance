@@ -33,7 +33,7 @@ export default function AdminNav() {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
-          {/* Logo and User Info */}
+          
           <div className="flex items-center space-x-4">
             <Link href="/admin">
               <div className="flex items-center space-x-2">
