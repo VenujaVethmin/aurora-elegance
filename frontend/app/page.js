@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
+import Link from 'next/link';
 
 // Animation component that triggers on scroll
 const AnimateOnScroll = ({ children, className, variants }) => {
@@ -339,25 +340,27 @@ const Gallery = () => {
                 transition={{ duration: 0.3 }}
               >
                 <div className="w-full h-[400px] sm:h-[500px] md:h-[600px] flex items-center justify-center bg-black rounded-2xl overflow-hidden">
-  <img
-    src={image.src}
-    alt={image.alt}
-    className="h-full w-auto object-contain"
-  />
-</div>
-
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    className="h-full w-auto object-contain"
+                  />
+                </div>
               </motion.div>
             </AnimateOnScroll>
           ))}
         </div>
         <div className="text-center mt-12">
-          <motion.button
-            className="gold-border text-white font-semibold py-3 px-8 rounded-full bg-transparent button-glow"
-            whileHover={{ scale: 1.05, borderColor: "var(--gold)" }}
-            whileTap={{ scale: 0.95 }}
-          >
-            View Full Gallery
-          </motion.button>
+      
+          <Link href="/gallery">
+            <motion.button
+              className="gold-border text-white font-semibold py-3 px-8 rounded-full bg-transparent button-glow"
+              whileHover={{ scale: 1.05, borderColor: "var(--gold)" }}
+              whileTap={{ scale: 0.95 }}
+            >
+              View Full Gallery
+            </motion.button>
+          </Link>
         </div>
       </AnimateOnScroll>
     </section>
