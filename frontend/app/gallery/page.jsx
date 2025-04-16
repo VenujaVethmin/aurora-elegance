@@ -4,43 +4,54 @@ import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import { X } from "lucide-react";
+import axiosInstance from "@/lib/axiosInstance";
+import useSWR from "swr";
+
+const fetcher = (url) => axiosInstance.get(url).then((res) => res.data);
 
 export default function Gallery() {
+
+   const {
+     data: galleryImages,
+     error,
+     isLoading,
+     mutate,
+   } = useSWR("/cloudinary/gallery", fetcher);
   const [selectedImage, setSelectedImage] = useState(null);
   const [filter, setFilter] = useState("all");
 
-  const galleryImages = [
-    {
-      src: "https://images.unsplash.com/photo-1562322140-8baeececf3df?q=80&w=800",
-      alt: "Professional Hair Styling",
-      category: "hair",
-    },
-    {
-      src: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?q=80&w=800",
-      alt: "Beauty Treatment",
-      category: "makeup",
-    },
-    {
-      src: "https://images.unsplash.com/photo-1595497803262-c4dbe1d58d08?q=80&w=800",
-      alt: "Bridal Makeup",
-      category: "bridal",
-    },
-    {
-      src: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=800",
-      alt: "Makeup Session",
-      category: "makeup",
-    },
-    {
-      src: "https://images.unsplash.com/photo-1560869713-da86a9ec4523?q=80&w=800",
-      alt: "Hair Treatment",
-      category: "hair",
-    },
-    {
-      src: "https://images.unsplash.com/photo-1500840216050-6ffa99d75160?q=80&w=800",
-      alt: "Wedding Makeup",
-      category: "bridal",
-    },
-  ];
+  // const galleryImages = [
+  //   {
+  //     src: "https://images.unsplash.com/photo-1562322140-8baeececf3df?q=80&w=800",
+  //     alt: "Professional Hair Styling",
+  //     category: "hair",
+  //   },
+  //   {
+  //     src: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?q=80&w=800",
+  //     alt: "Beauty Treatment",
+  //     category: "makeup",
+  //   },
+  //   {
+  //     src: "https://images.unsplash.com/photo-1595497803262-c4dbe1d58d08?q=80&w=800",
+  //     alt: "Bridal Makeup",
+  //     category: "bridal",
+  //   },
+  //   {
+  //     src: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=800",
+  //     alt: "Makeup Session",
+  //     category: "makeup",
+  //   },
+  //   {
+  //     src: "https://images.unsplash.com/photo-1560869713-da86a9ec4523?q=80&w=800",
+  //     alt: "Hair Treatment",
+  //     category: "hair",
+  //   },
+  //   {
+  //     src: "https://images.unsplash.com/photo-1500840216050-6ffa99d75160?q=80&w=800",
+  //     alt: "Wedding Makeup",
+  //     category: "bridal",
+  //   },
+  // ];
 
   const categories = [
     { id: "all", name: "All" },
@@ -49,7 +60,7 @@ export default function Gallery() {
     { id: "makeup", name: "Makeup" },
   ];
 
-  const filteredImages = galleryImages.filter(
+  const filteredImages = galleryImages?.filter(
     (img) => filter === "all" || img.category === filter
   );
 
@@ -88,7 +99,7 @@ export default function Gallery() {
 
           {/* Gallery Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredImages.map((image, index) => (
+            {filteredImages?.map((image, index) => (
               <motion.div
                 key={index}
                 layout
@@ -101,15 +112,19 @@ export default function Gallery() {
               >
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-300 z-10" />
                 <Image
-                  src={image.src}
-                  alt={image.alt}
+                  src={
+                    image.link ||
+                    "https://res.cloudinary.com/dxmyox5js/image/upload/v1744805756/uploads/pxsgblzpamusht7hio8y.jpg"
+                  }
+                  alt={image?.title || "Gallery image"}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
+
                 <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent z-20">
                   <p className="text-white text-lg font-semibold transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                    {image.alt}
+                    {image.title}
                   </p>
                 </div>
               </motion.div>

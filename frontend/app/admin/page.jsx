@@ -1,78 +1,144 @@
 "use client";
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, ImageIcon, LogOut, X, Plus } from 'lucide-react';
-import Image from 'next/image';
-import AdminNav from '@/components/AdminNav';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Upload, ImageIcon, X, Plus } from "lucide-react";
+import Image from "next/image";
+import AdminNav from "@/components/AdminNav";
+import axiosInstance from "@/lib/axiosInstance";
+import useSWR from "swr";
+import { toast } from "sonner";
 
+const fetcher = (url) => axiosInstance.get(url).then((res) => res.data);
 
 export default function AdminPanel() {
-  const [activeTab, setActiveTab] = useState('gallery');
+
+  const { data : images , error, isLoading, mutate } = useSWR(
+    "/cloudinary/gallery",
+    fetcher
+  );
+  const [activeTab, setActiveTab] = useState("gallery");
   const [isUploading, setIsUploading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [uploadData, setUploadData] = useState({
-    category: '',
-    title: '',
-    file: null
+    category: "",
+    title: "",
+    file: null,
   });
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   const categories = [
     { id: "bridal", name: "Bridal" },
     { id: "hair", name: "Hair" },
-    { id: "makeup", name: "Makeup" }
+    { id: "makeup", name: "Makeup" },
   ];
 
-  // Dummy images data
-  const [images] = useState([
-    {
-      id: 1,
-      src: "https://images.unsplash.com/photo-1562322140-8baeececf3df?q=80&w=800",
-      alt: "Hair Styling",
-      category: "hair"
-    },
-    {
-      id: 2,
-      src: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?q=80&w=800",
-      alt: "Beauty Treatment",
-      category: "makeup"
-    },
-    {
-      id: 3,
-      src: "https://images.unsplash.com/photo-1595497803262-c4dbe1d58d08?q=80&w=800",
-      alt: "Bridal Makeup",
-      category: "bridal"
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        alert("File size exceeds 10MB limit.");
+        return;
+      }
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file.");
+        return;
+      }
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      setUploadData({ ...uploadData, file });
+    } else {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        setPreviewUrl(null);
+      }
+      setUploadData({ ...uploadData, file: null });
     }
-  ]);
-
-  const handleUpload = (e) => {
-    e.preventDefault();
-    setIsUploading(true);
-    // Simulate upload delay
-    setTimeout(() => {
-      setIsUploading(false);
-      alert('Image uploaded successfully! (Demo)');
-      setUploadData({ category: '', title: '', file: null });
-      setActiveTab('gallery');
-    }, 2000);
   };
 
-  const handleDelete = (id) => {
-    if (confirm('Are you sure you want to delete this image?')) {
-      alert(`Delete image ${id} (Demo only)`);
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    setIsUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("imageFormData", uploadData.file);
+      formData.append("category", uploadData.category);
+      formData.append("title", uploadData.title);
+
+      const response = await axiosInstance.post("/cloudinary/upload", formData);
+
+      if (response.status === 200) {
+        
+        toast.success("Image uploaded successfully!");
+        mutate(); 
+        if (previewUrl) {
+          URL.revokeObjectURL(previewUrl);
+          setPreviewUrl(null);
+        }
+        setUploadData({ category: "", title: "", file: null });
+        setActiveTab("gallery");
+        
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert(
+        `Failed to upload image: ${
+          error.response?.data?.error || error.message
+        }`
+      );
+    } finally {
+      setIsUploading(false);
     }
+  };
+
+  const handleDelete = async (id) => {
+     toast("Delete this image?", {
+       description: "This action cannot be undone.",
+       action: {
+         label: "Delete",
+         onClick: async () => {
+           try {
+             const res = await axiosInstance.delete(
+               `/cloudinary/deleteGallery/${id}`
+             );
+             if (res.status === 200) {
+               toast.success("Image deleted successfully!");
+               mutate(); // Re-fetch gallery data
+             } else {
+               toast.error("Failed to delete image.");
+             }
+           } catch (err) {
+             toast.error("Something went wrong.");
+             console.error(err);
+           }
+         },
+       },
+     });
   };
 
   return (
     <div className="min-h-screen bg-black">
       <AdminNav />
-      
       <div className="container mx-auto px-4 py-8">
         {/* Tab Navigation */}
         <div className="flex space-x-4 mb-8">
           <button
-            onClick={() => setActiveTab('gallery')}
+            onClick={() => setActiveTab("gallery")}
             className={`px-6 py-2 rounded-full transition-all ${
-              activeTab === 'gallery' ? 'gold-bg text-black' : 'gold-border text-white'
+              activeTab === "gallery"
+                ? "gold-bg text-black"
+                : "gold-border text-white"
             }`}
           >
             <div className="flex items-center space-x-2">
@@ -81,9 +147,11 @@ export default function AdminPanel() {
             </div>
           </button>
           <button
-            onClick={() => setActiveTab('upload')}
+            onClick={() => setActiveTab("upload")}
             className={`px-6 py-2 rounded-full transition-all ${
-              activeTab === 'upload' ? 'gold-bg text-black' : 'gold-border text-white'
+              activeTab === "upload"
+                ? "gold-bg text-black"
+                : "gold-border text-white"
             }`}
           >
             <div className="flex items-center space-x-2">
@@ -94,25 +162,31 @@ export default function AdminPanel() {
         </div>
 
         {/* Content Area */}
-        {activeTab === 'upload' ? (
+        {activeTab === "upload" ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="max-w-2xl mx-auto"
           >
-            <h2 className="text-2xl font-bold gold-text mb-8">Upload New Image</h2>
+            <h2 className="text-2xl font-bold gold-text mb-8">
+              Upload New Image
+            </h2>
             <form onSubmit={handleUpload} className="space-y-6">
               <div>
                 <label className="block text-gold mb-2">Category</label>
                 <select
                   value={uploadData.category}
-                  onChange={(e) => setUploadData({ ...uploadData, category: e.target.value })}
+                  onChange={(e) =>
+                    setUploadData({ ...uploadData, category: e.target.value })
+                  }
                   className="w-full p-3 rounded-lg bg-black/50 border border-gold/20 focus:border-gold focus:outline-none text-white"
                   required
                 >
                   <option value="">Select Category</option>
-                  {categories.map(cat => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -122,7 +196,9 @@ export default function AdminPanel() {
                 <input
                   type="text"
                   value={uploadData.title}
-                  onChange={(e) => setUploadData({ ...uploadData, title: e.target.value })}
+                  onChange={(e) =>
+                    setUploadData({ ...uploadData, title: e.target.value })
+                  }
                   className="w-full p-3 rounded-lg bg-black/50 border border-gold/20 focus:border-gold focus:outline-none text-white"
                   required
                 />
@@ -134,17 +210,34 @@ export default function AdminPanel() {
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => setUploadData({ ...uploadData, file: e.target.files[0] })}
+                    onChange={handleFileChange}
                     className="hidden"
                     id="image-upload"
                     required
                   />
                   <label htmlFor="image-upload" className="cursor-pointer">
                     <Upload className="mx-auto mb-4 text-gold" size={32} />
-                    <p className="text-gold/80">Click to upload or drag and drop</p>
-                    <p className="text-sm text-gold/60 mt-2">PNG, JPG, WebP up to 10MB</p>
+                    <p className="text-gold/80">
+                      Click to upload or drag and drop
+                    </p>
+                    <p className="text-sm text-gold/60 mt-2">
+                      PNG, JPG, WebP up to 10MB
+                    </p>
                   </label>
                 </div>
+                {previewUrl && (
+                  <div className="mt-4">
+                    <p className="text-gold mb-2">Preview:</p>
+                    <div className="relative w-full max-w-xs aspect-square rounded-lg overflow-hidden">
+                      <Image
+                        src={previewUrl}
+                        alt="Preview"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               <button
@@ -152,32 +245,30 @@ export default function AdminPanel() {
                 disabled={isUploading}
                 className="w-full gold-bg text-black font-semibold py-3 px-8 rounded-lg disabled:opacity-50"
               >
-                {isUploading ? 'Uploading...' : 'Upload Image'}
+                {isUploading ? "Uploading..." : "Upload Image"}
               </button>
             </form>
           </motion.div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Add New Image Card */}
             <motion.div
               whileHover={{ scale: 1.02 }}
-              onClick={() => setActiveTab('upload')}
+              onClick={() => setActiveTab("upload")}
               className="aspect-square rounded-xl border-2 border-dashed border-gold/20 flex flex-col items-center justify-center cursor-pointer hover:border-gold transition-colors"
             >
               <Plus size={40} className="text-gold/40" />
               <p className="mt-2 text-gold/40">Add New Image</p>
             </motion.div>
 
-            {/* Image Grid */}
-            {images.map((image) => (
+            {images?.map((image) => (
               <motion.div
                 key={image.id}
                 layout
                 className="group relative aspect-square rounded-xl overflow-hidden"
               >
                 <Image
-                  src={image.src}
-                  alt={image.alt}
+                  src={image.link || "image.link"}
+                  alt={image.title || "image"}
                   fill
                   className="object-cover"
                 />
@@ -197,14 +288,15 @@ export default function AdminPanel() {
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
                   <p className="text-white font-medium">{image.alt}</p>
-                  <p className="text-gold/80 text-sm capitalize">{image.category}</p>
+                  <p className="text-gold/80 text-sm capitalize">
+                    {image.category}
+                  </p>
                 </div>
               </motion.div>
             ))}
           </div>
         )}
 
-        {/* Image Preview Modal */}
         <AnimatePresence>
           {selectedImage && (
             <motion.div

@@ -29,11 +29,11 @@ const GoogleIcon = () => (
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleDemo = () => {
+  const handleDemo = async () => {
     setIsLoading(true);
     // Simulate loading for demo
     setTimeout(() => {
-      window.location.href = "/admin";
+      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google`;
     }, 1500);
   };
 
