@@ -74,7 +74,7 @@ app.get("/api/me", ensureJWTAuth, async (req, res) => {
   }
 });
 
-app.use("/api/cloudinary", cloudinaryRoute);
+app.use("/api/cloudinary",ensureJWTAuth, cloudinaryRoute);
 
 app.listen(3001, () => {
   console.log("Server started on port 3001");
