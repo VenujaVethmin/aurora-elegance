@@ -80,6 +80,12 @@ export default function SignIn() {
             >
               ← Return to website
             </Link>
+            <Link
+              href="/admin"
+              className="inline-block mt-4 ml-4 text-gold hover:text-gold/80 text-sm"
+            >
+              Return to admin panel →
+            </Link>
           </div>
         </div>
       </motion.div>
