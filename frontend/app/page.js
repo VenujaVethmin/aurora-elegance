@@ -57,57 +57,25 @@ const AnimateOnScroll = ({ children, className, variants }) => {
 
 // Hero Section
 const Hero = () => {
-  const [timeLeft, setTimeLeft] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
-
-  useEffect(() => {
-    const openingDate = new Date("2025-04-17T04:00:00Z"); // 9:30 AM SL time in UTC
-    const calculateTimeLeft = () => {
-      const now = new Date();
-      const difference = openingDate.getTime() - now.getTime();
-      if (difference > 0) {
-        setTimeLeft({
-          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-          minutes: Math.floor((difference / 1000 / 60) % 60),
-          seconds: Math.floor((difference / 1000) % 60),
-        });
-      }
-    };
-    calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const CountdownUnit = ({ value, label }) => (
-    <div className="bg-black/50 backdrop-blur-sm p-4 rounded-xl border border-gold/20">
-      <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gold">
-        {value.toString().padStart(2, "0")}
-      </div>
-      <div className="text-sm text-gold/80">{label}</div>
-    </div>
-  );
-
   return (
     <section className="relative bg-black h-screen flex flex-col justify-center items-center overflow-hidden">
+      {/* Background Wave */}
       <div className="gold-wave" />
+
+      {/* Hero Content */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
         className="text-center z-10 px-4"
       >
+        {/* Logo */}
         <motion.div
-          className=""
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.8 }}
         >
-          <Image  
+          <Image
             src="/logo.png" // Ensure it's in public/
             alt="Aurora Elegance Logo"
             width={500} // Adjust size as needed
@@ -117,46 +85,42 @@ const Hero = () => {
           />
         </motion.div>
 
+        {/* Tagline */}
         <motion.p
-          className="text-lg md:text-xl tracking-widest uppercase "
+          className="text-lg md:text-xl tracking-widest uppercase text-gold/80 mt-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.8 }}
         >
-          
+      
         </motion.p>
 
+        {/* Welcome Message */}
         <motion.div
-          className="bg-black/50 backdrop-blur-sm p-6 rounded-xl mb-8"
+          className="bg-black/50 backdrop-blur-sm p-6 rounded-xl mt-8"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.9, duration: 0.6 }}
         >
-          <h2 className="text-xl mb-4 flex items-center justify-center gap-2">
-            <Calendar className="text-gold" size={24} />
-            <span>Grand Opening</span>
+          <h2 className="text-2xl md:text-3xl font-bold text-gold mb-4">
+            Welcome to Aurora Elegance
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
-            <CountdownUnit value={timeLeft.days} label="Days" />
-            <CountdownUnit value={timeLeft.hours} label="Hours" />
-            <CountdownUnit value={timeLeft.minutes} label="Minutes" />
-            <CountdownUnit value={timeLeft.seconds} label="Seconds" />
-          </div>
-          <div className="flex items-center justify-center gap-2 text-sm md:text-base text-gold/80">
-            <Clock size={18} className="text-gold" />
-            <span>17th April 2025, 9:30 AM</span>
-          </div>
+          <p className="text-white/80 text-sm md:text-base">
+            Your premier destination for beauty, bridal dreams, and style
+            transformation.
+          </p>
         </motion.div>
       </motion.div>
 
+      {/* Explore Button */}
       <motion.div
         className="absolute bottom-8 left-0 right-0 mx-auto text-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.8 }}
         transition={{ delay: 1.5, duration: 0.5 }}
       >
-        <ChevronDown className="text-gold animate-bounce" />
-        <p className="text-sm mt-2">Explore Our Elegance</p>
+        <ChevronDown className="text-gold animate-bounce mx-auto" />
+        <p className="text-sm mt-2 text-gold/60">Explore Our Elegance</p>
       </motion.div>
     </section>
   );

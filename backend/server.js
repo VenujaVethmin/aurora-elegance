@@ -3,7 +3,7 @@ import * as dotenv from "dotenv";
 import express from "express";
 
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../prisma/prisma-client";
 import passport from "passport";
 import { ensureJWTAuth } from "./middleware/jwtAuth.js";
 import cloudinaryRoute from "./routes/cloudinary.route.js";
